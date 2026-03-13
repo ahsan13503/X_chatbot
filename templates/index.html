@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👑 GOLD LUXURY AI SAAS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.14.1/index.js" type="module"></script>
+</head>
+<body>
+    <div class="gold-particles"></div>
+    
+    <div class="app-container">
+        <!-- Left Sidebar - Users/Conversations -->
+        <div class="sidebar glass-effect">
+            <div class="sidebar-header gold-gradient">
+                <div class="logo">
+                    <span class="logo-icon">👑</span>
+                    <h1>LUXURY<span>AI</span></h1>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar" id="user-avatar">👤</div>
+                    <div class="user-info">
+                        <span class="user-name" id="user-name">Guest User</span>
+                        <span class="user-status online">● Online</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="conversations-header">
+                <h3>✨ Conversations</h3>
+                <button class="new-chat-btn" onclick="newChat()">+ New Chat</button>
+            </div>
+            
+            <div class="conversation-list" id="conversation-list">
+                <!-- Conversations will appear here -->
+                <div class="conversation-item active">
+                    <div class="conv-avatar">💬</div>
+                    <div class="conv-info">
+                        <h4>Current Chat</h4>
+                        <p>Tap to continue...</p>
+                    </div>
+                    <span class="conv-time">Now</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Chat Area -->
+        <div class="main-chat glass-effect">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <h2>AI Concierge <span class="gold-text">Gold Edition</span></h2>
+                    <div class="typing-indicator" id="global-typing" style="display: none;">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <div class="chat-header-actions">
+                    <button class="action-btn" onclick="toggleSound()">🔔</button>
+                    <button class="action-btn" onclick="toggleTheme()">🌓</button>
+                    <button class="action-btn" onclick="showProfile()">⚙️</button>
+                </div>
+            </div>
+            
+            <div class="messages-container" id="messages">
+                <!-- Welcome message -->
+                <div class="message welcome-message">
+                    <div class="message-avatar">👑</div>
+                    <div class="message-content">
+                        <div class="message-sender">Luxury AI Concierge</div>
+                        <div class="message-bubble">
+                            Welcome to Gold Luxury AI! ✨ How may I assist you today?
+                            <div class="message-time">Just now</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-container glass-effect">
+                <button class="emoji-btn" onclick="toggleEmojiPicker()">😊</button>
+                <button class="attach-btn" onclick="triggerFileUpload()">📎</button>
+                <input type="file" id="file-input" style="display: none;" onchange="uploadFile(this)">
+                <input type="text" id="message-input" placeholder="Type your message... (Shift + Enter for new line)" autocomplete="off">
+                <button class="send-btn gold-gradient" onclick="sendMessage()">
+                    <span>Send</span>
+                    <span class="send-icon">➤</span>
+                </button>
+            </div>
+            
+            <!-- Emoji Picker (hidden by default) -->
+            <div id="emoji-picker" style="display: none; position: absolute; bottom: 80px; right: 20px;"></div>
+        </div>
+        
+        <!-- Right Sidebar - Analytics/Info -->
+        <div class="right-sidebar glass-effect">
+            <div class="right-sidebar-header gold-gradient">
+                <h3>📊 Session Info</h3>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span class="stat-label">Session ID</span>
+                    <span class="stat-value" id="session-id">{{ user_id[:8] }}...</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Messages</span>
+                    <span class="stat-value" id="message-count">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Status</span>
+                    <span class="stat-value active">Active</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Model</span>
+                    <span class="stat-value">GPT-4 Turbo</span>
+                </div>
+            </div>
+            
+            <div class="quick-actions">
+                <h4>Quick Actions</h4>
+                <button class="quick-btn" onclick="quickAction('help')">🆘 Help</button>
+                <button class="quick-btn" onclick="quickAction('pricing')">💰 Pricing</button>
+                <button class="quick-btn" onclick="quickAction('features')">✨ Features</button>
+                <button class="quick-btn" onclick="quickAction('contact')">📞 Contact</button>
+            </div>
+            
+            <div class="recent-activities">
+                <h4>Recent Activity</h4>
+                <div id="recent-activities-list">
+                    <div class="activity-item">
+                        <span class="activity-dot"></span>
+                        <span class="activity-text">Session started</span>
+                        <span class="activity-time">Now</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content glass-effect">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2>Your Profile 👑</h2>
+            <input type="text" id="profile-name" placeholder="Your Name">
+            <input type="email" id="profile-email" placeholder="Your Email">
+            <button onclick="saveProfile()" class="gold-gradient">Save Profile</button>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>
