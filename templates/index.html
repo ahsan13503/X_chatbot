@@ -13,7 +13,7 @@
     <div class="gold-particles"></div>
     
     <div class="app-container">
-        <!-- Left Sidebar - Users/Conversations -->
+        <!-- Left Sidebar -->
         <div class="sidebar glass-effect">
             <div class="sidebar-header gold-gradient">
                 <div class="logo">
@@ -35,7 +35,6 @@
             </div>
             
             <div class="conversation-list" id="conversation-list">
-                <!-- Conversations will appear here -->
                 <div class="conversation-item active">
                     <div class="conv-avatar">💬</div>
                     <div class="conv-info">
@@ -64,7 +63,6 @@
             </div>
             
             <div class="messages-container" id="messages">
-                <!-- Welcome message -->
                 <div class="message welcome-message">
                     <div class="message-avatar">👑</div>
                     <div class="message-content">
@@ -77,9 +75,11 @@
                 </div>
             </div>
             
+            <!-- Input Container with File, Emoji, Voice, Send -->
             <div class="input-container glass-effect">
                 <button class="emoji-btn" onclick="toggleEmojiPicker()">😊</button>
                 <button class="attach-btn" onclick="triggerFileUpload()">📎</button>
+                <button class="voice-btn" onclick="startVoice()">🎤</button>   <!-- Voice button added -->
                 <input type="file" id="file-input" style="display: none;" onchange="uploadFile(this)">
                 <input type="text" id="message-input" placeholder="Type your message... (Shift + Enter for new line)" autocomplete="off">
                 <button class="send-btn gold-gradient" onclick="sendMessage()">
@@ -88,11 +88,10 @@
                 </button>
             </div>
             
-            <!-- Emoji Picker (hidden by default) -->
             <div id="emoji-picker" style="display: none; position: absolute; bottom: 80px; right: 20px;"></div>
         </div>
         
-        <!-- Right Sidebar - Analytics/Info -->
+        <!-- Right Sidebar -->
         <div class="right-sidebar glass-effect">
             <div class="right-sidebar-header gold-gradient">
                 <h3>📊 Session Info</h3>
@@ -149,31 +148,46 @@
         </div>
     </div>
     
+    <!-- Floating Chat Bubble -->
+    <div id="chat-bubble">💬</div>
+
+    <style>
+        #chat-bubble {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FFD700, #C9A227);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255,215,0,0.7);
+            z-index: 9999;
+            transition: transform 0.3s ease;
+        }
+        #chat-bubble:hover {
+            transform: scale(1.1);
+        }
+        /* Voice button styling */
+        .voice-btn {
+            background: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .voice-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: scale(1.1);
+        }
+    </style>
+    
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </body>
 </html>
-<!-- Floating Chat Bubble -->
-<div id="chat-bubble">💬</div>
-
-<style>
-#chat-bubble {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #FFD700, #C9A227);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    cursor: pointer;
-    box-shadow: 0 0 20px rgba(255,215,0,0.7);
-    z-index: 9999;
-    transition: transform 0.3s ease;
-}
-#chat-bubble:hover {
-    transform: scale(1.1);
-}
-</style>
