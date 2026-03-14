@@ -109,3 +109,23 @@ def handle_connect():
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000)
+/* Typing Animation */
+.typing {
+    display: inline-block;
+}
+.typing span {
+    width: 6px;
+    height: 6px;
+    background: white;
+    margin: 2px;
+    border-radius: 50%;
+    display: inline-block;
+    animation: typing 1s infinite;
+}
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing {
+    0% { opacity: 0.2; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-5px); }
+    100% { opacity: 0.2; transform: translateY(0); }
+}
