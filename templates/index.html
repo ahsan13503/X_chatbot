@@ -152,3 +152,28 @@
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </body>
 </html>
+<!-- Floating Chat Bubble -->
+<div id="chat-bubble">💬</div>
+
+<style>
+#chat-bubble {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFD700, #C9A227);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(255,215,0,0.7);
+    z-index: 9999;
+    transition: transform 0.3s ease;
+}
+#chat-bubble:hover {
+    transform: scale(1.1);
+}
+</style>
