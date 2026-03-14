@@ -92,6 +92,7 @@ def handle_connect():
     user_id = session.get('user_id', str(uuid.uuid4()))
     session['user_id'] = user_id
     emit('connected', {'user_id': user_id})
+    
 from twilio.twiml.messaging_response import MessagingResponse
 
 @app.route('/whatsapp', methods=['POST'])
