@@ -92,6 +92,52 @@ def handle_connect():
     user_id = session.get('user_id', str(uuid.uuid4()))
     session['user_id'] = user_id
     emit('connected', {'user_id': user_id})
+from twilio.twiml.messaging_response import MessagingResponse
 
+@app.route('/whatsapp', methods=['POST'])
+def whatsapp_webhook():
+    incoming_msg = request.values.get('Body', '').strip()
+    sender = request.values.get('From', '')  # e.g., 'whatsapp:+923001234567'
+    
+    phone = sender.replace('whatsapp:', '')
+    
+    # Contact dhundo phone number se
+    contact = Contact.query.filter_by(phone=phone).first()
+    if not contact:
+        contact = Contact(name='WhatsApp User', phone=phone)
+        db.session.add(contact)
+        db.session.commit()
+    
+    # Open conversation dhundo
+    conv = Conversation.query.filter_by(contact_id=contact.id, status='open', channel='whatsapp').first()
+    if not conv:
+        conv = Conversation(contact_id=contact.id, channel='whatsapp')
+        db.session.add(conv)
+        db.session.commit()
+    
+    # User message save karo
+    msg = Message(conversation_id=conv.id, role='user', content=incoming_msg)
+    db.session.add(msg)
+    db.session.commit()
+    
+    # AI response lo (OpenAI)
+    try:
+        response = client.chat.completions.create(
+            model='gpt-3.5-turbo',
+            messages=[{'role': 'user', 'content': incoming_msg}]
+        )
+        reply = response.choices[0].message.content
+    except Exception as e:
+        reply = f"Error: {str(e)}"
+    
+    # AI message save karo
+    ai_msg = Message(conversation_id=conv.id, role='assistant', content=reply)
+    db.session.add(ai_msg)
+    db.session.commit()
+    
+    # Twilio ko reply bhejo (TwiML format mein)
+    twiml_resp = MessagingResponse()
+    twiml_resp.message(reply)
+    return str(twiml_resp), 200
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000, debug=True)
