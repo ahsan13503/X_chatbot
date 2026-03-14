@@ -326,3 +326,14 @@ window.onclick = function(event) {
         modal.style.display = 'none';
     }
 };
+/* Glassmorphism Chat Container */
+.chat-container {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    margin: 20px;
+}
