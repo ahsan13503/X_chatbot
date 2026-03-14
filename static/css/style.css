@@ -379,7 +379,7 @@ body {
     position: relative;
 }
 
-.emoji-btn, .attach-btn {
+.emoji-btn, .attach-btn, .voice-btn {
     background: transparent;
     border: none;
     color: var(--text-secondary);
@@ -390,7 +390,7 @@ body {
     border-radius: 50%;
 }
 
-.emoji-btn:hover, .attach-btn:hover {
+.emoji-btn:hover, .attach-btn:hover, .voice-btn:hover {
     color: var(--gold-primary);
     transform: scale(1.1);
 }
@@ -741,12 +741,4 @@ body {
     .app-container {
         grid-template-columns: 1fr;
     }
-}
-/* Luxury Background */
-body {
-    background: linear-gradient(135deg, #0f0f0f, #1a1a1a, #000000);
-    color: white;
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-}
+    }
