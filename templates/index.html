@@ -4,15 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>👑 GOLD LUXURY AI SAAS</title>
+
+    <!-- Main CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Socket.IO -->
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+
+    <!-- Emoji Picker -->
     <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.14.1/index.js" type="module"></script>
 </head>
 <body>
+    <!-- Background Particles -->
     <div class="gold-particles"></div>
-    
+
+    <!-- Main App Container -->
     <div class="app-container">
+
         <!-- Left Sidebar -->
         <div class="sidebar glass-effect">
             <div class="sidebar-header gold-gradient">
@@ -28,12 +39,12 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="conversations-header">
                 <h3>✨ Conversations</h3>
                 <button class="new-chat-btn" onclick="newChat()">+ New Chat</button>
             </div>
-            
+
             <div class="conversation-list" id="conversation-list">
                 <div class="conversation-item active">
                     <div class="conv-avatar">💬</div>
@@ -45,7 +56,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Main Chat Area -->
         <div class="main-chat glass-effect">
             <div class="chat-header">
@@ -61,7 +72,7 @@
                     <button class="action-btn" onclick="showProfile()">⚙️</button>
                 </div>
             </div>
-            
+
             <div class="messages-container" id="messages">
                 <div class="message welcome-message">
                     <div class="message-avatar">👑</div>
@@ -74,12 +85,12 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Input Container with File, Emoji, Voice, Send -->
+
+            <!-- Input Container -->
             <div class="input-container glass-effect">
                 <button class="emoji-btn" onclick="toggleEmojiPicker()">😊</button>
                 <button class="attach-btn" onclick="triggerFileUpload()">📎</button>
-                <button class="voice-btn" onclick="startVoice()">🎤</button>   <!-- Voice button added -->
+                <button class="voice-btn" onclick="startVoice()">🎤</button>
                 <input type="file" id="file-input" style="display: none;" onchange="uploadFile(this)">
                 <input type="text" id="message-input" placeholder="Type your message... (Shift + Enter for new line)" autocomplete="off">
                 <button class="send-btn gold-gradient" onclick="sendMessage()">
@@ -87,16 +98,16 @@
                     <span class="send-icon">➤</span>
                 </button>
             </div>
-            
+
             <div id="emoji-picker" style="display: none; position: absolute; bottom: 80px; right: 20px;"></div>
         </div>
-        
+
         <!-- Right Sidebar -->
         <div class="right-sidebar glass-effect">
             <div class="right-sidebar-header gold-gradient">
                 <h3>📊 Session Info</h3>
             </div>
-            
+
             <div class="stats-container">
                 <div class="stat-item">
                     <span class="stat-label">Session ID</span>
@@ -115,7 +126,7 @@
                     <span class="stat-value">GPT-4 Turbo</span>
                 </div>
             </div>
-            
+
             <div class="quick-actions">
                 <h4>Quick Actions</h4>
                 <button class="quick-btn" onclick="quickAction('help')">🆘 Help</button>
@@ -123,7 +134,7 @@
                 <button class="quick-btn" onclick="quickAction('features')">✨ Features</button>
                 <button class="quick-btn" onclick="quickAction('contact')">📞 Contact</button>
             </div>
-            
+
             <div class="recent-activities">
                 <h4>Recent Activity</h4>
                 <div id="recent-activities-list">
@@ -136,7 +147,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Profile Modal -->
     <div id="profile-modal" class="modal">
         <div class="modal-content glass-effect">
@@ -147,10 +158,11 @@
             <button onclick="saveProfile()" class="gold-gradient">Save Profile</button>
         </div>
     </div>
-    
+
     <!-- Floating Chat Bubble -->
     <div id="chat-bubble">💬</div>
 
+    <!-- Internal Styles -->
     <style>
         #chat-bubble {
             position: fixed;
@@ -172,7 +184,6 @@
         #chat-bubble:hover {
             transform: scale(1.1);
         }
-        /* Voice button styling */
         .voice-btn {
             background: transparent;
             border: none;
@@ -187,7 +198,8 @@
             transform: scale(1.1);
         }
     </style>
-    
+
+    <!-- Main JS -->
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </body>
 </html>
