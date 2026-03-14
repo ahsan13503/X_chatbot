@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Gold AI</title>
+    <style>
+        body { font-family: Arial; background: #111; color: white; padding: 20px; }
+        .card { background: #222; border-radius: 10px; padding: 20px; margin: 10px; display: inline-block; min-width: 200px; }
+        .card h2 { margin: 0; color: gold; }
+    </style>
+</head>
+<body>
+    <h1>📊 Analytics Dashboard</h1>
+    <div id="summary"></div>
+    <h2>Recent Events</h2>
+    <ul id="events"></ul>
+
+    <script>
+        fetch('/api/analytics/summary')
+            .then(res => res.json())
+            .then(data => {
+                const sum = data.data;
+                document.getElementById('summary').innerHTML = `
+                    <div class="card"><h2>${sum.messages}</h2><p>Total Messages</p></div>
+                    <div class="card"><h2>${sum.conversations}</h2><p>Conversations</p></div>
+                    <div class="card"><h2>${sum.contacts}</h2><p>Contacts</p></div>
+                `;
+            });
+        fetch('/api/analytics/events')
+            .then(res => res.json())
+            .then(data => {
+                let html = '';
+                data.events.forEach(e => {
+                    html += `<li>${e.type} at ${new Date(e.timestamp).toLocaleString()}</li>`;
+                });
+                document.getElementById('events').innerHTML = html;
+            });
+    </script>
+</body>
+</html>
