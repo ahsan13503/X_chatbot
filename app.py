@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
-import openai
+from openai import OpenAI
 import os
 import uuid
 from datetime import datetime
@@ -16,7 +16,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 socketio = SocketIO(app, cors_allowed_origins="*", ping_timeout=60)
 
 # Initialize OpenAI
-client = openai.OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
+client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
 
 # Store chat history (in production use Redis/MongoDB)
 chat_sessions = {}
