@@ -114,7 +114,6 @@ if __name__ == '__main__':
     display: inline-block;
 }
 .typing span {
-    width: 6px;
     height: 6px;
     background: white;
     margin: 2px;
