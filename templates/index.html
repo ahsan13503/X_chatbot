@@ -4,26 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>👑 GOLD LUXURY AI SAAS</title>
-
-    <!-- Main CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-    <!-- Socket.IO -->
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
-
-    <!-- Emoji Picker -->
     <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.14.1/index.js" type="module"></script>
 </head>
 <body>
-    <!-- Background Particles -->
     <div class="gold-particles"></div>
 
-    <!-- Main App Container -->
     <div class="app-container">
-
         <!-- Left Sidebar -->
         <div class="sidebar glass-effect">
             <div class="sidebar-header gold-gradient">
@@ -39,12 +28,10 @@
                     </div>
                 </div>
             </div>
-
             <div class="conversations-header">
                 <h3>✨ Conversations</h3>
                 <button class="new-chat-btn" onclick="newChat()">+ New Chat</button>
             </div>
-
             <div class="conversation-list" id="conversation-list">
                 <div class="conversation-item active">
                     <div class="conv-avatar">💬</div>
@@ -92,13 +79,12 @@
                 <button class="attach-btn" onclick="triggerFileUpload()">📎</button>
                 <button class="voice-btn" onclick="startVoice()">🎤</button>
                 <input type="file" id="file-input" style="display: none;" onchange="uploadFile(this)">
-                <input type="text" id="message-input" placeholder="Type your message... (Shift + Enter for new line)" autocomplete="off">
+                <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off">
                 <button class="send-btn gold-gradient" onclick="sendMessage()">
                     <span>Send</span>
                     <span class="send-icon">➤</span>
                 </button>
             </div>
-
             <div id="emoji-picker" style="display: none; position: absolute; bottom: 80px; right: 20px;"></div>
         </div>
 
@@ -107,7 +93,6 @@
             <div class="right-sidebar-header gold-gradient">
                 <h3>📊 Session Info</h3>
             </div>
-
             <div class="stats-container">
                 <div class="stat-item">
                     <span class="stat-label">Session ID</span>
@@ -126,7 +111,6 @@
                     <span class="stat-value">GPT-4 Turbo</span>
                 </div>
             </div>
-
             <div class="quick-actions">
                 <h4>Quick Actions</h4>
                 <button class="quick-btn" onclick="quickAction('help')">🆘 Help</button>
@@ -134,7 +118,6 @@
                 <button class="quick-btn" onclick="quickAction('features')">✨ Features</button>
                 <button class="quick-btn" onclick="quickAction('contact')">📞 Contact</button>
             </div>
-
             <div class="recent-activities">
                 <h4>Recent Activity</h4>
                 <div id="recent-activities-list">
@@ -159,10 +142,14 @@
         </div>
     </div>
 
-    <!-- Floating Chat Bubble -->
+    <!-- Floating Chat Bubble (AI) -->
     <div id="chat-bubble">💬</div>
 
-    <!-- Internal Styles -->
+    <!-- Floating WhatsApp Button (Replace with your number) -->
+    <a href="https://wa.me/923288663650?text=Hi!%20I%20need%20help" target="_blank" id="whatsapp-button">
+        <img src="https://img.icons8.com/color/48/000000/whatsapp--v1.png" alt="WhatsApp">
+    </a>
+
     <style>
         #chat-bubble {
             position: fixed;
@@ -197,9 +184,31 @@
             background: rgba(255, 215, 0, 0.2);
             transform: scale(1.1);
         }
+        /* WhatsApp Button */
+        #whatsapp-button {
+            position: fixed;
+            bottom: 100px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #25D366;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(37,211,102,0.5);
+            z-index: 9998;
+            transition: transform 0.3s ease;
+        }
+        #whatsapp-button:hover {
+            transform: scale(1.1);
+        }
+        #whatsapp-button img {
+            width: 35px;
+            height: 35px;
+        }
     </style>
 
-    <!-- Main JS -->
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </body>
 </html>
