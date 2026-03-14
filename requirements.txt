@@ -3,7 +3,7 @@ flask-socketio==5.3.6
 python-socketio==5.10.0
 eventlet==0.33.3
 flask-cors==4.0.1
-openai==1.2.0
+openai==1.30.0
 gunicorn==21.2.0
 Pillow==12.0.0
 python-magic==0.4.27
