@@ -7,10 +7,3 @@ openai==0.28.1
 gunicorn==21.2.0
 Pillow==10.1.0
 python-magic==0.4.27
-<div class="messages" id="messages">
-    <!-- Example bot message -->
-    <div class="bot-message">
-        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" class="avatar">
-        <span class="message">Hello Sir 👑 How can I assist you today?</span>
-    </div>
-</div>
