@@ -1,34 +1,32 @@
 from flask import Flask, render_template, request, jsonify, session
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
-from openai import OpenAI
+import openai
 import os
 import uuid
 from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'gold-luxury-secret-key-2026')
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
-# Initialize SocketIO with CORS
 socketio = SocketIO(app, cors_allowed_origins="*", ping_timeout=60)
 
-# Initialize OpenAI (automatically uses OPENAI_API_KEY from env)
-client = OpenAI()
+# OpenAI API key
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
-# Store chat history
 chat_sessions = {}
 user_profiles = {}
 
-# System prompt for luxury AI
-SYSTEM_PROMPT = """You are a luxury AI concierge for a premium SaaS platform. 
+SYSTEM_PROMPT = """You are a luxury AI concierge for a premium SaaS platform.
 Your responses should be:
 - Extremely polite and professional
 - Use elegant language
 - Offer personalized assistance
 - Be helpful and concise
 - Use emojis occasionally for warmth (✨, 👑, 💫)
-- Address user as "Sir/Ma'am" or by name if known"""
+- Address user as "Sir/Ma'am" or by name if known
+"""
 
 @app.route('/')
 def home():
@@ -42,31 +40,33 @@ def chat():
         data = request.json
         user_id = data.get('user_id', session.get('user_id', 'anonymous'))
         message = data.get('message')
-        
+
         if user_id not in chat_sessions:
             chat_sessions[user_id] = []
             chat_sessions[user_id].append({'role': 'system', 'content': SYSTEM_PROMPT})
-        
-        chat_sessions[user_id].append({'role': 'user', 'content': message, 'timestamp': datetime.now().isoformat()})
-        
-        response = client.chat.completions.create(
-            model='gpt-3.5-turbo',
+
+        chat_sessions[user_id].append({'role': 'user', 'content': message})
+
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
             messages=chat_sessions[user_id],
             temperature=0.7,
             max_tokens=500
         )
-        
-        reply = response.choices[0].message.content
-        
-        chat_sessions[user_id].append({'role': 'assistant', 'content': reply, 'timestamp': datetime.now().isoformat()})
-        
-        if len(chat_sessions[user_id]) > 50:
-            chat_sessions[user_id] = chat_sessions[user_id][-50:]
-        
-        return jsonify({'success': True, 'reply': reply, 'timestamp': datetime.now().isoformat()})
-        
+
+        reply = response["choices"][0]["message"]["content"]
+
+        chat_sessions[user_id].append({'role': 'assistant', 'content': reply})
+
+        return jsonify({
+            'success': True,
+            'reply': reply,
+            'timestamp': datetime.now().isoformat()
+        })
+
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
 
 @app.route('/api/history/<user_id>')
 def get_history(user_id):
@@ -77,23 +77,28 @@ def get_history(user_id):
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
+
 @socketio.on('message')
 def handle_message(data):
     try:
-        user_id = data.get('user_id')
         message = data.get('message')
-        
-        response = client.chat.completions.create(
-            model='gpt-3.5-turbo',
+
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
             messages=[{'role': 'user', 'content': message}]
         )
-        
+
         emit('response', {
-            'reply': response.choices[0].message.content,
+            'reply': response["choices"][0]["message"]["content"],
             'timestamp': datetime.now().isoformat()
-        }, room=user_id)
+        })
+
     except Exception as e:
-        emit('response', {'reply': f'Error: {str(e)}', 'timestamp': datetime.now().isoformat()}, room=user_id)
+        emit('response', {
+            'reply': f'Error: {str(e)}',
+            'timestamp': datetime.now().isoformat()
+        })
+
 
 @socketio.on('connect')
 def handle_connect():
@@ -101,5 +106,6 @@ def handle_connect():
     session['user_id'] = user_id
     emit('connected', {'user_id': user_id})
 
+
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000)
