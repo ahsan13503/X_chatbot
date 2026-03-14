@@ -29,23 +29,18 @@ socket.on('user_typing', (data) => {
     }
 });
 
-// Message functions
+// ========== MESSAGE FUNCTIONS ==========
 async function sendMessage() {
     const message = messageInput.value.trim();
     if (!message) return;
     
-    // Add user message to UI
     addMessage('user', message);
     messageInput.value = '';
     
-    // Show typing indicator
     showTypingIndicator();
-    
-    // Update message count
     messageCount++;
     updateStats();
     
-    // Send to server
     try {
         const response = await fetch('/api/chat', {
             method: 'POST',
@@ -89,8 +84,6 @@ function addMessage(role, content, timestamp = new Date().toISOString()) {
     
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    
-    // Add to recent activities
     addActivity(`${role === 'user' ? 'You' : 'AI'} sent a message`);
 }
 
@@ -111,14 +104,12 @@ function showTypingIndicator() {
     messagesContainer.appendChild(indicator);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
     
-    // Emit typing event
     socket.emit('typing', { user_id: currentUser, typing: true });
 }
 
 function hideTypingIndicator() {
     const indicator = document.getElementById('typing-indicator');
     if (indicator) indicator.remove();
-    
     socket.emit('typing', { user_id: currentUser, typing: false });
 }
 
@@ -143,41 +134,53 @@ messageInput.addEventListener('input', () => {
     }, 1000);
 });
 
-// File upload
+// ========== FILE UPLOAD FUNCTIONS ==========
 function triggerFileUpload() {
     document.getElementById('file-input').click();
 }
 
-async function uploadFile(input) {
+function uploadFile(input) {
     const file = input.files[0];
     if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-        const fileData = e.target.result.split(',')[1];
-        
-        addMessage('user', `📎 Uploaded: ${file.name}`);
-        
-        const response = await fetch('/api/upload', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                user_id: currentUser,
-                file: fileData,
-                fileName: file.name,
-                fileType: file.type
-            })
-        });
-        
-        const data = await response.json();
-        if (data.success) {
-            addMessage('assistant', `✨ File uploaded successfully! How can I help you with ${file.name}?`);
-        }
-    };
-    reader.readAsDataURL(file);
+
+    addMessage('user', `📎 File uploaded: ${file.name}`);
+
+    // Simulate AI response after 1 second
+    setTimeout(() => {
+        addMessage('assistant', `✨ I've received your file "${file.name}". How can I help you with it?`);
+    }, 1000);
+
+    input.value = '';
 }
 
-// Emoji picker
+// ========== VOICE MESSAGE FUNCTION ==========
+function startVoice() {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Your browser does not support voice input. Try Chrome or Edge.');
+        return;
+    }
+
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = function(event) {
+        const speechResult = event.results[0][0].transcript;
+        document.getElementById('message-input').value = speechResult;
+        // Uncomment next line to auto-send after voice
+        // sendMessage();
+    };
+
+    recognition.onerror = function(event) {
+        console.error('Speech recognition error', event.error);
+        alert('Voice recognition error: ' + event.error);
+    };
+
+    recognition.start();
+}
+
+// ========== EMOJI PICKER ==========
 function toggleEmojiPicker() {
     const picker = document.getElementById('emoji-picker');
     picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
@@ -194,7 +197,7 @@ function toggleEmojiPicker() {
     }
 }
 
-// Quick actions
+// ========== QUICK ACTIONS ==========
 function quickAction(action) {
     const actions = {
         help: "I need help with the platform",
@@ -207,7 +210,7 @@ function quickAction(action) {
     sendMessage();
 }
 
-// Profile functions
+// ========== PROFILE FUNCTIONS ==========
 function showProfile() {
     document.getElementById('profile-modal').style.display = 'flex';
 }
@@ -238,7 +241,7 @@ async function saveProfile() {
     addMessage('assistant', `✨ Profile updated! Welcome, ${name || 'Guest'}!`);
 }
 
-// New chat
+// ========== NEW CHAT ==========
 function newChat() {
     messagesContainer.innerHTML = `
         <div class="message welcome-message">
@@ -257,12 +260,12 @@ function newChat() {
     addActivity('New conversation started');
 }
 
-// Update statistics
+// ========== STATISTICS ==========
 function updateStats() {
     messageCountSpan.textContent = messageCount;
 }
 
-// Add activity to sidebar
+// ========== ACTIVITY ==========
 function addActivity(text) {
     const activitiesList = document.getElementById('recent-activities-list');
     const activityDiv = document.createElement('div');
@@ -275,24 +278,21 @@ function addActivity(text) {
     
     activitiesList.insertBefore(activityDiv, activitiesList.firstChild);
     
-    // Keep only last 5 activities
     while (activitiesList.children.length > 5) {
         activitiesList.removeChild(activitiesList.lastChild);
     }
 }
 
-// Settings functions
+// ========== SETTINGS ==========
 function toggleSound() {
-    // Implement sound toggle
     addActivity('Sound settings toggled');
 }
 
 function toggleTheme() {
-    // Implement theme toggle
     addActivity('Theme toggled');
 }
 
-// Load chat history on page load
+// ========== LOAD HISTORY ==========
 window.onload = async function() {
     try {
         const response = await fetch(`/api/history/${currentUser}`);
@@ -312,7 +312,6 @@ window.onload = async function() {
         console.error('Error loading history:', error);
     }
     
-    // Auto-resize textarea
     messageInput.addEventListener('input', function() {
         this.style.height = 'auto';
         this.style.height = (this.scrollHeight) + 'px';
@@ -326,14 +325,3 @@ window.onclick = function(event) {
         modal.style.display = 'none';
     }
 };
-/* Glassmorphism Chat Container */
-.chat-container {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-    padding: 20px;
-    margin: 20px;
-}
