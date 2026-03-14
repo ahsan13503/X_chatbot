@@ -7,6 +7,8 @@ import uuid
 from datetime import datetime
 
 app = Flask(__name__)
+CORS(app)
+
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'gold-luxury-secret-key-2026')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
@@ -16,7 +18,6 @@ socketio = SocketIO(app, cors_allowed_origins="*", ping_timeout=60)
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 chat_sessions = {}
-user_profiles = {}
 
 SYSTEM_PROMPT = """You are a luxury AI concierge for a premium SaaS platform.
 Your responses should be:
@@ -109,22 +110,3 @@ def handle_connect():
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=5000)
-/* Typing Animation */
-.typing {
-    display: inline-block;
-}
-.typing span {
-    height: 6px;
-    background: white;
-    margin: 2px;
-    border-radius: 50%;
-    display: inline-block;
-    animation: typing 1s infinite;
-}
-.typing span:nth-child(2) { animation-delay: 0.2s; }
-.typing span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes typing {
-    0% { opacity: 0.2; transform: translateY(0); }
-    50% { opacity: 1; transform: translateY(-5px); }
-    100% { opacity: 0.2; transform: translateY(0); }
-}
